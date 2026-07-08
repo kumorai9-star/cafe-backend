@@ -6,10 +6,6 @@ import connectDB from "./config/db.js";
 // Load environment variables
 dotenv.config();
 
-// Debug (remove this after everything works)
-console.log("PORT:", process.env.PORT);
-console.log("MONGO_URI:", process.env.MONGO_URI);
-
 // Connect to MongoDB
 connectDB();
 
@@ -20,15 +16,30 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Test Route
+// ==========================
+// Home Route
+// ==========================
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "Cafe98 Backend is Running 🚀",
+    message: "🚀 Cafe98 Backend is Running Successfully!",
   });
 });
 
+// ==========================
+// API Routes
+// (Uncomment when you create them)
+// ==========================
+
+// import productRoutes from "./routes/productRoutes.js";
+// import authRoutes from "./routes/authRoutes.js";
+
+// app.use("/api/products", productRoutes);
+// app.use("/api/auth", authRoutes);
+
+// ==========================
 // 404 Route
+// ==========================
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -36,9 +47,11 @@ app.use((req, res) => {
   });
 });
 
+// ==========================
 // Start Server
+// ==========================
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🚀 Cafe98 Server cruising gracefully on port ${PORT}`);
 });
