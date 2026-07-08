@@ -1,40 +1,44 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import connectDB from './config/db.js';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
 
-import menuRoutes from './routes/menuRoutes.js';
-import reservationRoutes from './routes/reservationRoutes.js';
-import contactRoutes from './routes/contactRoutes.js';
-
+// Load environment variables
 dotenv.config();
+
+// Debug (remove this after everything works)
+console.log("PORT:", process.env.PORT);
+console.log("MONGO_URI:", process.env.MONGO_URI);
+
+// Connect to MongoDB
+connectDB();
 
 const app = express();
 
-// Middlewares
+// Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Routes Mount Points
-app.use('/api/menu', menuRoutes);
-app.use('/api/reservation', reservationRoutes);
-app.use('/api/contact', contactRoutes);
-
-// Health Check Endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'healthy', system: 'Café 98 Engine Online' });
+// Test Route
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Cafe98 Backend is Running 🚀",
+  });
 });
 
-// Error handling fallback
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'An internal application breakdown occurred.' });
+// 404 Route
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route Not Found",
+  });
 });
 
+// Start Server
 const PORT = process.env.PORT || 5000;
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Café 98 Server cruising gracefully on port ${PORT}`);
-  });
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });
