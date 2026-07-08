@@ -1,31 +1,35 @@
 import express from 'express';
-import Contact from '../models/Contact.js';
+import mongoose from 'mongoose'; // or import your Contact model if you have one
 
 const router = express.Router();
 
-// POST /api/contact
+// Define a quick Schema if you aren't importing a model file
+const ContactSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  subject: { type: String, required: true },
+  message: { type: String, required: true }
+}, { timestamps: true });
+
+const Contact = mongoose.models.Contact || mongoose.model('Contact', ContactSchema);
+
+// POST route matching /api/contact
 router.post('/', async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
+
+    // Check if any fields arrived blank
     if (!name || !email || !subject || !message) {
-      return res.status(400).json({ message: 'All fields are mandatory.' });
+      return res.status(400).json({ message: "All input fields are required." });
     }
 
-    const contactEntry = new Contact(req.body);
-    await contactEntry.save();
-    res.status(201).json({ message: 'Message logged successfully!' });
-  } catch (error) {
-    res.status(500).json({ message: 'Contact processing fault', error: error.message });
-  }
-});
+    const newContact = new Contact({ name, email, subject, message });
+    await newContact.save();
 
-// Admin hook placeholder
-router.get('/admin', async (req, res) => {
-  try {
-    const messages = await Contact.find({}).sort({ createdAt: -1 });
-    res.status(200).json(messages);
-  } catch (error) {
-    res.status(500).json({ message: 'Fetch fault', error: error.message });
+    res.status(201).json({ message: "Message processed successfully!" });
+  } catch (err) {
+    console.error("Contact Route Error:", err);
+    res.status(500).json({ message: "Error executing action." });
   }
 });
 
