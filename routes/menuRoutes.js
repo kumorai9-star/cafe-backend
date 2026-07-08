@@ -1,6 +1,7 @@
 import express from 'express';
 import Menu from '../models/Menu.js';
 
+
 const router = express.Router();
 
 // GET /api/menu - Public Route
