@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 
+
+
 // Import Routes
 import menuRoutes from "./routes/menuRoutes.js";
 import reservationRoutes from "./routes/reservationRoutes.js";
@@ -32,6 +34,7 @@ app.get("/", (req, res) => {
 // =========================
 app.use("/api/menu", menuRoutes);
 app.use("/api/reservations", reservationRoutes);
+
 
 // 404 Route
 app.use((req, res) => {
